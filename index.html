@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NearPlay - ネット不要。近くの友達とすぐ遊べる。</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #07091a;
+      --card: #0f1228;
+      --border: #1e2448;
+      --accent: #4f8ef7;
+      --accent2: #7c5cf7;
+      --text: #ffffff;
+      --muted: #8892b0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      background: radial-gradient(ellipse at 50% 0%, #1a2a6c33 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #4f8ef720 0%, transparent 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #4f8ef720;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 28px;
+      letter-spacing: 1px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 6vw, 52px);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: clamp(15px, 3vw, 18px);
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    /* SCROLL HINT */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+    }
+
+    /* SECTION */
+    section {
+      padding: 80px 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(24px, 5vw, 40px);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+
+    /* GAMES */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .game-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .game-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .game-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .game-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .game-tag {
+      display: inline-block;
+      background: #4f8ef715;
+      border: 1px solid #4f8ef740;
+      color: var(--accent);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-top: 12px;
+    }
+
+    /* HOW IT WORKS */
+    .how-bg {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .step h4 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 100px 24px;
+    }
+
+    .cta-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .cta-inner h2 {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .cta-inner p {
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
+      border-radius: 99px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo">NearPlay</div>
+    <div class="badge">開発中 · Coming Soon</div>
+    <h1>ネット不要。<br>近くの友達と<span>すぐ遊べる。</span></h1>
+    <p>データ通信も設定も不要。Bluetoothをオンにするだけで、その場にいる仲間とすぐに対戦できるゲームアプリ。</p>
+    <a class="btn" href="https://x.com/mangaAI124293" target="_blank">
+      𝕏 &nbsp;リリース情報を受け取る
+    </a>
+    <p class="btn-sub">フォローするだけ。無料です。</p>
+    <div class="scroll-hint">scroll</div>
+  </div>
+
+  <!-- GAMES -->
+  <section>
+    <p class="section-label">Games</p>
+    <div class="divider"></div>
+    <h2 class="section-title">3つのゲームを収録</h2>
+    <p class="section-desc">どれもシンプルなルールで、すぐに遊び始められます。</p>
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-icon">🐍</div>
+        <h3>バトルスネーク</h3>
+        <p>最後まで生き残った人の勝ち。画面を埋め尽くすスリルのリアルタイム対戦。</p>
+        <span class="game-tag">2〜4人</span>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">⚫</div>
+        <h3>オセロ</h3>
+        <p>定番の2人対戦。シンプルなのに奥が深い、頭を使うボードゲーム。</p>
+        <span class="game-tag">2人</span>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🃏</div>
+        <h3>カードバトル</h3>
+        <p>UNO風のカードゲーム。手札を出し切った人が勝ち。盛り上がること間違いなし。</p>
+        <span class="game-tag">2〜4人</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-bg">
+    <section>
+      <p class="section-label">How it works</p>
+      <div class="divider"></div>
+      <h2 class="section-title">始め方は3ステップだけ</h2>
+      <p class="section-desc">アカウント登録不要。アプリを開いたらすぐ遊べます。</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>BluetoothをON</h4>
+            <p>全員がスマホのBluetoothをオンにする。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>近くの友達を検索</h4>
+            <p>アプリが自動で近くのプレイヤーを見つける。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>ゲームスタート</h4>
+            <p>アプリを開いてゲームを選ぶだけ。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-inner">
+      <h2>リリースを<br>見逃したくないなら</h2>
+      <p>Xをフォローしておけば、リリース情報や開発の裏側をお届けします。</p>
+      <a class="btn" href="https://x.com/mangaAI124293" target="_blank">
+        𝕏 &nbsp;フォローする
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 NearPlay. All rights reserved.
+  </footer>
+
+</body>
+</html>
